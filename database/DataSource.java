@@ -3,7 +3,9 @@ package com.mobile_final.friendorfoe.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.mobile_final.friendorfoe.model.DataStudent;
@@ -36,9 +38,14 @@ public class DataSource {
     }
 
     public DataStudent createStudent(DataStudent student) {
-        ContentValues values = student.toValues();
-        mdatabase.insert(StudentsTable.TABLE_STUDENT, null, values);
-        return student;
+        try {
+            ContentValues values = student.toValues();
+            mdatabase.insert(StudentsTable.TABLE_STUDENT, null, values);
+        }catch (SQLiteException e)
+        {
+            e.printStackTrace();
+        }
+            return student;
     }
 
     public List<DataStudent> rawQuery(String S) {
@@ -67,6 +74,9 @@ public class DataSource {
         }
         cursor.close();
         return dataStudents;
+    }
+    public long getdataItemCount() {
+        return DatabaseUtils.queryNumEntries(mdatabase, StudentsTable.TABLE_STUDENT);
     }
 }
 

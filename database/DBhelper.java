@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DBhelper extends SQLiteOpenHelper{
 
-    private static final  String DB_FILE_NAME = "gamestates.db";
+    private static final String DB_FILE_NAME = "classroster.db";
     private static final int DB_VERSION = 1;
 
     DBhelper(Context context) {

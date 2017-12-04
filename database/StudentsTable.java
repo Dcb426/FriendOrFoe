@@ -1,7 +1,7 @@
 package com.mobile_final.friendorfoe.database;
 
 public class StudentsTable {
-    public static final String TABLE_STUDENT = "games";
+    public static final String TABLE_STUDENT = "students";
     public static final String COLUMN_ID = "studentId";
     public static final String COLUMN_NAME = "studentName";
     public static final String COLUMN_PHONE = "studentPhone";

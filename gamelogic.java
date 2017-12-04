@@ -1,5 +1,6 @@
 package com.mobile_final.friendorfoe;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobile_final.friendorfoe.database.DataSource;
@@ -24,58 +26,68 @@ public class gamelogic extends AppCompatActivity {
     DataSource mDataSource;
     private EditText Name;
     private EditText Phone;
+    private TextView joe;
+    TabHost tabHost;
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.game);
-        btn = (Button) findViewById(R.id.angry_btn);
-        Name = (EditText) findViewById(R.id.nameText);
-        Phone = (EditText) findViewById(R.id.phone);
-
-        //Databse
         try {
-            mDataSource = new DataSource(this);
-            mDataSource.open();
-            loadData();
-            toastMessage("Database Created");
-        } catch (SQLiteException e) {
-            toastMessage(e.toString());
-            e.printStackTrace();
-        }
 
-        final TabHost host = (TabHost) findViewById(R.id.TabHostj);
-        host.setup();
-        //Tab 1
-        TabHost.TabSpec spec = host.newTabSpec("Add Plyer");
-        spec.setContent(R.id.AddPlayers);
-        spec.setIndicator("Add Player");
-        host.addTab(spec);
-        //Tab 2
-        spec = host.newTabSpec("View Players");
-        spec.setContent(R.id.ViewPlayers);
-        spec.setIndicator("View Players");
-        host.addTab(spec);
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.game);
+            btn = (Button) findViewById(R.id.angry_btn);
+            Name = (EditText) findViewById(R.id.nameText);
+            Phone = (EditText) findViewById(R.id.phone);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            DataStudent mike = new DataStudent();
-            @Override
-            public void onClick(View v) {
-                mike.setID(UUID.randomUUID().toString());
-                mike.setName(Name.getText().toString());
-                mike.setstudentPhone(Phone.getText().toString());
-
-                if (Name.length() != 0 && Phone.length() != 0)
-                {
-                        mDataSource.createStudent(mike);
-                        loadData();
-                        host.setCurrentTab(1);
-                } else {
-                    toastMessage("You must enter data in ALL text fields or Take Picture!!");
-                }
+            //Databse
+            try {
+                mDataSource = new DataSource(this);
+                mDataSource.open();
+                toastMessage("Database Created");
+            } catch (SQLiteException e) {
+                toastMessage(e.toString());
+                e.printStackTrace();
             }
-        });
+
+            final TabHost host = (TabHost) findViewById(R.id.TabHostj);
+            host.setup();
+            //Tab 1
+            TabHost.TabSpec spec = host.newTabSpec("Add Plyer");
+            spec.setContent(R.id.AddPlayers);
+            spec.setIndicator("Add Player");
+            host.addTab(spec);
+            //Tab 2
+            spec = host.newTabSpec("View Players");
+            spec.setContent(R.id.ViewPlayers);
+            spec.setIndicator("View Players");
+            host.addTab(spec);
+            btn.setOnClickListener(new View.OnClickListener() {
+                DataStudent mike = new DataStudent();
+
+                @Override
+                public void onClick(View v) {
+                    mike.setID(UUID.randomUUID().toString());
+                    mike.setName(Name.getText().toString());
+                    mike.setstudentPhone(Phone.getText().toString());
+
+
+                    if (Name.length() != 0 && Phone.length() != 0) {
+                        try {
+                            mDataSource.createStudent(mike);
+                        } catch (SQLiteException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        toastMessage("You must enter data in ALL text fields");
+                    }
+                }
+            });
+        } catch (Exception e) {
+            String s = e.getMessage();
+            s = s;
+        }
     }
+
 
     @Override
     protected void onPause() {
@@ -109,6 +121,15 @@ public class gamelogic extends AppCompatActivity {
             {
                 final PlayerFragment SF =  PlayerFragment.newInstance(s);
                 final gamelogic ActivityMe = this;
+                SF.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Intent intent = new Intent(SF.getActivity() ,viewStudentActivity.class);
+                        intent.putExtra("StudentID",s.getID());
+                        startActivity(intent);
+                    }
+                });
                 FragTran.add(R.id.ViewPlayers, SF, s.hashCode()+s.getName());
             }
             FragTran.commit();

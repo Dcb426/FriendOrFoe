@@ -31,7 +31,7 @@ public class DataStudent {
     public String getName() {
         return this.studentName;
     }
-    public String getstudentPhone(String n) { return this.studentPhone;}
+    public String getstudentPhone() { return this.studentPhone;}
 
 
     public ContentValues toValues()
